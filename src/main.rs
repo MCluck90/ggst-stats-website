@@ -1,14 +1,14 @@
-mod characters;    
+mod characters;
 mod ggst_api;
 mod requests;
 mod responses;
 mod website;
 // use characters::{convert_to_character, Character};
-use responses::Replay;
 use chrono::NaiveDateTime;
 use dotenv::dotenv;
 use ggst_api::*;
-use sqlx::{postgres::PgPoolOptions, pool::PoolConnection, Postgres};
+use responses::Replay;
+use sqlx::{pool::PoolConnection, postgres::PgPoolOptions, Postgres};
 use std::env;
 use tokio;
 use tokio::task;
@@ -31,8 +31,8 @@ async fn main() {
         .unwrap();
 
     let mut task_set = task::JoinSet::new();
-    task_set.spawn(fetch_and_add_matches(pool.acquire().await.unwrap()));
-    // task_set.spawn(website::start(pool.acquire().await.unwrap()));
+    // task_set.spawn(fetch_and_add_matches(pool.acquire().await.unwrap()));
+    task_set.spawn(website::start());
 
     loop {
         let _ = task_set.join_next().await;
@@ -40,7 +40,6 @@ async fn main() {
             break;
         }
     }
-    
 }
 
 async fn fetch_and_add_matches(mut pool: PoolConnection<Postgres>) {
@@ -54,7 +53,7 @@ async fn fetch_and_add_matches(mut pool: PoolConnection<Postgres>) {
                 continue;
             } // I should log these errors somewhere.
         };
-        
+
         let old_count_row = sqlx::query!("SELECT COUNT(*) FROM matches")
             .fetch_one(&mut pool)
             .await
