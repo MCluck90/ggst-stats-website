@@ -5,15 +5,27 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GGST Stats</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+        }
+
+        #main-content {
+            margin-left: 15px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Resource hub for Guilty Gear Statistics</h1>
-    <p>Since 2. February I've been collecting every single match that has happened in the Strive Tower. Below are the current statistics I can display.</p><br>
-    <ul>
-        <li>Total matches: {{count}}</li>
-        <li>Celestial matches: {{celestial}}</li>
-        <li>Between Floor 8 and 10: {{eight_to_ten}}</li>
-        <li>Floor 7 and below: {{seven_and_below}}</li>
-    </ul>
+    <div id="main-content">
+        <h1>Resource hub for Guilty Gear Statistics</h1>
+        <p>Since 2. February I've been collecting every single match that has happened in the Strive Tower. Below are the current statistics I can display.</p><br>
+        <ul>
+            <li>Total matches: {{count}}</li>
+            <li>Celestial matches: {{celestial}}</li>
+            <li>Between Floor 8 and 10: {{eight_to_ten}}</li>
+            <li>Floor 7 and below: {{seven_and_below}}</li>
+        </ul>
+    </div>
 </body>
 </html>
