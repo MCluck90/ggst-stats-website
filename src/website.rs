@@ -1,26 +1,17 @@
+use crate::caching;
 use askama::Template;
 use axum::{
-    extract::Path,
-    handler::Handler,
-    http::StatusCode,
-    response::{Html, IntoResponse, Response},
-    routing::get,
-    routing::get_service,
-    Extension, Router,
+    http::StatusCode, response::IntoResponse, routing::get, routing::get_service, Extension, Router,
 };
-use serde::{Deserialize, Serialize};
+use redis::Client;
+use serde::Serialize;
 use sqlx::postgres::PgPoolOptions;
-use sqlx::types::chrono::NaiveDate;
-use sqlx::PgPool;
 use sqlx::Pool;
 use sqlx::Postgres;
 use std::env;
-use std::net::Ipv4Addr;
-use std::net::SocketAddr;
-use std::sync::Arc;
 use tower_http::services::ServeDir;
-
 pub async fn start() {
+    let redis_client = redis::Client::open("redis://127.0.0.1/").unwrap();
     let pool = PgPoolOptions::new()
         .max_connections(5)
         .connect(&env::var("DATABASE_URL").unwrap())
@@ -37,13 +28,13 @@ pub async fn start() {
             get_service(ServeDir::new("img")).handle_error(handle_error),
         )
         .route("/", get(root))
-        .layer(Extension(pool));
+        .layer(Extension(pool))
+        .layer(Extension(redis_client));
 
     // `axum::Server` is a re-export of `hyper::Server`
     let ip = env::var("IP").unwrap();
     let port = env::var("PORT").unwrap();
     let addr = format!("{}:{}", ip, port);
-    println!("{}", addr);
     axum::Server::bind(&addr.parse().unwrap())
         .serve(app.into_make_service())
         .await
@@ -51,53 +42,38 @@ pub async fn start() {
 }
 
 // basic handler that responds with a static string
-async fn root(pool: Extension<Pool<Postgres>>) -> Index {
-    let total = match sqlx::query!("SELECT COUNT(*) FROM matches")
-        .fetch_one(&pool.0)
-        .await
-    {
-        Ok(a) => match a.count {
-            Some(b) => b,
-            None => 0,
+async fn root(pool: Extension<Pool<Postgres>>, redis: Extension<Client>) -> Index {
+    let mut redis_conn = redis.get_connection().unwrap();
+    let mut sql_conn = pool.acquire().await.unwrap();
+
+    match caching::is_cached("index", &redis_conn) {
+        Some(_) => Index {
+            count: 0,
+            celestial: 0,
+            eight_to_ten: 0,
+            seven_and_below: 0,
         },
-        Err(_) => 0,
-    };
-    let celestial = match sqlx::query!("SELECT COUNT(*) FROM matches WHERE floor = 99")
-        .fetch_one(&pool.0)
-        .await
-    {
-        Ok(a) => match a.count {
-            Some(b) => b,
-            None => 0,
-        },
-        Err(_) => 0,
-    };
-    let eight_to_ten =
-        match sqlx::query!("SELECT COUNT(*) FROM matches WHERE floor between 8 and 10")
-            .fetch_one(&pool.0)
+        None => {
+            let rows = sqlx::query!(
+                "(SELECT COUNT(*) FROM matches) UNION ALL
+                    (SELECT COUNT(*) FROM matches WHERE floor = 99) UNION ALL
+                    (SELECT COUNT(*) FROM matches WHERE floor between 8 and 10) UNION ALL
+                    (SELECT COUNT(*) FROM matches WHERE floor < 8)"
+            )
+            .fetch_all(&mut sql_conn)
             .await
-        {
-            Ok(a) => match a.count {
-                Some(b) => b,
-                None => 0,
-            },
-            Err(_) => 0,
-        };
-    let seven_and_below = match sqlx::query!("SELECT COUNT(*) FROM matches WHERE floor < 8")
-        .fetch_one(&pool.0)
-        .await
-    {
-        Ok(a) => match a.count {
-            Some(b) => b,
-            None => 0,
-        },
-        Err(_) => 0,
-    };
-    Index {
-        count: total,
-        celestial: celestial,
-        eight_to_ten: eight_to_ten,
-        seven_and_below: seven_and_below,
+            .unwrap();
+
+            let mut nums: Vec<i64> = Vec::new();
+            for row in rows {
+                let num = row.count.unwrap();
+                nums.push(num);
+            }
+            println!("a");
+            let index = Index::new(nums);
+            caching::store_cache("index", &mut redis_conn, index);
+            index
+        }
     }
 }
 
@@ -105,11 +81,22 @@ async fn handle_error(_err: std::io::Error) -> impl IntoResponse {
     (StatusCode::INTERNAL_SERVER_ERROR, "Something went wrong...")
 }
 
-#[derive(Template)]
+#[derive(Template, Serialize, Copy, Clone)]
 #[template(path = "index.html")]
 pub struct Index {
     count: i64,
     celestial: i64,
     eight_to_ten: i64,
     seven_and_below: i64,
+}
+
+impl Index {
+    fn new(nums: Vec<i64>) -> Index {
+        Index {
+            count: nums[0],
+            celestial: nums[1],
+            eight_to_ten: nums[2],
+            seven_and_below: nums[3],
+        }
+    }
 }
