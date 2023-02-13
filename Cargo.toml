@@ -4,23 +4,23 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-tokio = { version = "1", features=["full"] }
+tokio = { version = "1.25", features=["full"] }
 reqwest = "0.11.14"
-serde = { version = "1", features = ["derive"] }
-serde_json = "1.0.91"
-serde_derive = "1"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0.93"
+serde_derive = "1.0"
 hex = "0.4.3"
 aes-gcm = "0.10.1"
-rmp-serde = "1"
+rmp-serde = "1.1"
 base64-url = "1.4.13"
-dotenv = "0.15.0"
+dotenv = "0.15"
 sqlx = {version = "*", features = ["runtime-tokio-native-tls", "postgres", "chrono"]}
-chrono = "0.4.23"
-num-traits = "0.2.15"
-num-derive = "0.3.3"
-num = "0.4.0"
-askama = { version= "0.11.1", features = ["with-axum"] }
-askama_axum = "0.2.1"
-axum = "0.6.4"
-tower-http = { version = "0.3.5", features = ["fs", "trace"] }
-redis = { version = "0.22.3", features = ["tokio-comp"] }
+chrono = "0.4"
+num-traits = "0.2"
+num-derive = "0.3"
+num = "0.4"
+askama = { version= "0.11", features = ["with-axum"] }
+askama_axum = "0.2"
+axum = "0.6"
+tower-http = { version = "0.3", features = ["fs", "trace"] }
+rustis = "0.8"

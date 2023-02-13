@@ -32,7 +32,7 @@ async fn main() {
         .unwrap();
 
     let mut task_set = task::JoinSet::new();
-    // task_set.spawn(fetch_and_add_matches(pool.acquire().await.unwrap()));
+    task_set.spawn(fetch_and_add_matches(pool.acquire().await.unwrap()));
     task_set.spawn(website::start());
 
     loop {
@@ -44,7 +44,7 @@ async fn main() {
 }
 
 async fn fetch_and_add_matches(mut pool: PoolConnection<Postgres>) {
-    let mut pages: u64 = 100;
+    let mut pages: u64 = 5;
     loop {
         let replays: Vec<Replay> = match get_replays(pages).await {
             Ok(r) => r,

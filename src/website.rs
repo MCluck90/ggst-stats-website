@@ -3,15 +3,16 @@ use askama::Template;
 use axum::{
     http::StatusCode, response::IntoResponse, routing::get, routing::get_service, Extension, Router,
 };
-use redis::Client;
+use rustis::client::Client;
 use serde::Serialize;
+use serde::Deserialize;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::Pool;
 use sqlx::Postgres;
 use std::env;
 use tower_http::services::ServeDir;
 pub async fn start() {
-    let redis_client = redis::Client::open("redis://127.0.0.1/").unwrap();
+    let redis_client = Client::connect("redis://127.0.0.1/").await.unwrap();
     let pool = PgPoolOptions::new()
         .max_connections(5)
         .connect(&env::var("DATABASE_URL").unwrap())
@@ -43,16 +44,15 @@ pub async fn start() {
 
 // basic handler that responds with a static string
 async fn root(pool: Extension<Pool<Postgres>>, redis: Extension<Client>) -> Index {
-    let mut redis_conn = redis.get_connection().unwrap();
     let mut sql_conn = pool.acquire().await.unwrap();
+    let mut redis_client = redis.0;
+    let is_cached = caching::is_cached("index", &mut redis_client);
 
-    match caching::is_cached("index", &redis_conn) {
-        Some(_) => Index {
-            count: 0,
-            celestial: 0,
-            eight_to_ten: 0,
-            seven_and_below: 0,
-        },
+    match is_cached.await {
+        Some(cache) => {
+            let index: Index = serde_json::from_str(&cache).unwrap();
+            index
+        }
         None => {
             let rows = sqlx::query!(
                 "(SELECT COUNT(*) FROM matches) UNION ALL
@@ -69,9 +69,8 @@ async fn root(pool: Extension<Pool<Postgres>>, redis: Extension<Client>) -> Inde
                 let num = row.count.unwrap();
                 nums.push(num);
             }
-            println!("a");
             let index = Index::new(nums);
-            caching::store_cache("index", &mut redis_conn, index);
+            caching::store_cache("index", &mut redis_client, index).await;
             index
         }
     }
@@ -81,7 +80,7 @@ async fn handle_error(_err: std::io::Error) -> impl IntoResponse {
     (StatusCode::INTERNAL_SERVER_ERROR, "Something went wrong...")
 }
 
-#[derive(Template, Serialize, Copy, Clone)]
+#[derive(Template, Serialize, Deserialize, Copy, Clone)]
 #[template(path = "index.html")]
 pub struct Index {
     count: i64,
