@@ -15,7 +15,7 @@ However, there are some details you should know before delving into this.
 
 * ### NO JAVASCRIPT
 
-* Store your license in the `license` folder and change the file name to your name. By submitting your code to this repository, you agree that I'm allowed to use the code on my server, with zero restrictions or limitations, for no cost. 
+* Add your name to the CONTRIBUTORS.md file. By submitting your code to this repository, you submit the coder under the AGPL license and agree that I'm allowed to use the code on my server, with zero restrictions or limitations, for no cost. 
 
 ## Code of Conduct
 
