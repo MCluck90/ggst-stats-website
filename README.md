@@ -6,7 +6,7 @@ Welcome to the Web part of the GGST Stats website. This repository hosts all the
 Clone the repository  
 Edit example.env into .env  
 Insert the required information. A typical database url looks something like `"postgresql://user:pass@localhost/databasename"`. Suggested IP and port is 0.0.0.0 8080  
-Download the test database: <ggst-stats.net/sql/dump.sql>  
+Download the test database: [ggst-stats.net/sql/dump.sql](ggst-stats.net/sql/dump.sql)   
 Go into `psql` and create a database called `ggststats`  
 Go back, and run `psql ggststats < database.sql`   
 `cargo run`. This should install all the dependencies and start up the server.
