@@ -13,3 +13,4 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 The following people have contributed to this project under the AGPL License:
 - Adrian "Maria Artemis" Berg <adrianrberg@protonmail.com>
+- Meadow "MeowMeowMeadow" Davis <mead0wz0edavis@gmail.com>
