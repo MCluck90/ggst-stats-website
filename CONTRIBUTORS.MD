@@ -7,4 +7,4 @@ You should have received a copy of the GNU Affero General Public License along w
 The following people have contributed to this project under the AGPL License:
 
 - Adrian "Maria Artemis" Berg <adrianrberg@protonmail.com>
-- Meadow "MeowMeowMeadow" Davis <mead0wz0edais@gmail.com>
+- Meadow "MeowMeowMeadow" Davis <mead0wz0edavis@gmail.com>
