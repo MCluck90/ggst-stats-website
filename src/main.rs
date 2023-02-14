@@ -50,7 +50,7 @@ async fn fetch_and_add_matches(mut pool: PoolConnection<Postgres>) {
             Ok(r) => r,
             Err(err) => {
                 println!("Error: {}", err);
-                std::thread::sleep(std::time::Duration::from_secs(10));
+                tokio::time::sleep(std::time::Duration::from_secs(10)).await;
                 continue;
             } // I should log these errors somewhere.
         };
@@ -95,6 +95,6 @@ async fn fetch_and_add_matches(mut pool: PoolConnection<Postgres>) {
         pages = calculated as u64 + 2;
 
         println!("New page count: {}\n", pages);
-        std::thread::sleep(std::time::Duration::from_secs(60));
+        tokio::time::sleep(std::time::Duration::from_secs(60)).await;
     }
 }
