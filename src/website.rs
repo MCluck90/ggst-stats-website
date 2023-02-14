@@ -28,11 +28,15 @@ pub async fn start() {
             "/img",
             get_service(ServeDir::new("img")).handle_error(handle_error),
         )
+        .nest_service(
+            "/sql",
+            get_service(ServeDir::new("sql")).handle_error(handle_error),
+        )
         .route("/", get(root))
+        .route("/character", get(character))
         .layer(Extension(pool))
         .layer(Extension(redis_client));
 
-    // `axum::Server` is a re-export of `hyper::Server`
     let ip = env::var("IP").unwrap();
     let port = env::var("PORT").unwrap();
     let addr = format!("{}:{}", ip, port);
@@ -42,7 +46,6 @@ pub async fn start() {
         .unwrap();
 }
 
-// basic handler that responds with a static string
 async fn root(pool: Extension<Pool<Postgres>>, redis: Extension<Client>) -> Index {
     let mut sql_conn = pool.acquire().await.unwrap();
     let mut redis_client = redis.0;
@@ -76,6 +79,10 @@ async fn root(pool: Extension<Pool<Postgres>>, redis: Extension<Client>) -> Inde
     }
 }
 
+async fn character() -> CharacterPage {
+    CharacterPage{}
+}
+
 async fn handle_error(_err: std::io::Error) -> impl IntoResponse {
     (StatusCode::INTERNAL_SERVER_ERROR, "Something went wrong...")
 }
@@ -96,6 +103,18 @@ impl Index {
             celestial: nums[1],
             eight_to_ten: nums[2],
             seven_and_below: nums[3],
+        }
+    }
+}
+
+#[derive(Template, Serialize, Deserialize, Copy, Clone)]
+#[template(path = "bridget.html")]
+pub struct CharacterPage {
+}
+
+impl CharacterPage {
+    fn new() -> CharacterPage {
+        CharacterPage {
         }
     }
 }
