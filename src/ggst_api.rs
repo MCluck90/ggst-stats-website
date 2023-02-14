@@ -38,7 +38,7 @@ where
         if let Ok(r) = decrypt_response::<responses::Replays>(&response_bytes) {
             replays.extend_from_slice(&r.replays);
         }
-        tokio::time::sleep(std::time::Duration::from_secs(1));
+        tokio::time::sleep(std::time::Duration::from_secs(1)).await;
     }
 
     Ok(replays)
