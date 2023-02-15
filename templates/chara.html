@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}{{full_name}}{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="/static/chara.css">
+{% endblock %}
+{% block content %}
+<a href="/"><button>Return to the Home Page</button></a>
+<div class="container">
+    <div class="item-img">
+        <h1>{{full_name}}</h1>
+        <img src="/img/{{shorthand}}_portrait.png" alt="Portrait of {{full_name}}"/>
+    </div>
+    <div class="item">
+        <h1>Tower Games</h1>
+        <ul>
+            <li>Celestial: {{floor_games["99"]}}</li>    
+            <li>Floor 10: {{floor_games["10"]}}</li>
+            <li>Floor 9: {{floor_games["9"]}}</li>
+            <li>Floor 8: {{floor_games["8"]}}</li>
+            <li>Floor 7: {{floor_games["7"]}}</li>
+            <li>Floor 6: {{floor_games["6"]}}</li>
+            <li>Floor 5: {{floor_games["5"]}}</li>
+            <li>Floor 4: {{floor_games["4"]}}</li>
+            <li>Floor 3: {{floor_games["3"]}}</li>
+            <li>Floor 2: {{floor_games["2"]}}</li>
+            <li>Floor 1: {{floor_games["1"]}}</li>    
+        </ul>
+    </div>
+
+    <div class="item">
+        <h1>Win Ratio</h1>
+        <ul>
+            Currently not implemented
+        </ul>
+    </div>
+
+</div>
+{% endblock %}

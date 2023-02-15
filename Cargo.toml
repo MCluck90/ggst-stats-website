@@ -17,3 +17,4 @@ askama_axum = "0.2"
 axum = "0.6"
 tower-http = { version = "0.3", features = ["fs", "trace"] }
 rustis = "0.8"
+stats_shared = { git = "https://github.com/ggst-stats-net/ggst-stats-shared" }

@@ -2,7 +2,6 @@ mod website;
 use dotenv::dotenv;
 use tokio;
 mod caching;
-const MATCHES_PER_PAGE: f32 = 127.0;
 
 #[tokio::main]
 async fn main() {
@@ -15,4 +14,3 @@ async fn main() {
     }
     website::start().await;
 }
-
