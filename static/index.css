@@ -1,0 +1,13 @@
+#characters {
+    display: flex;
+    flex-direction: column;
+    column-count: 2;
+}
+
+.char-item {
+    flex-grow: 1;
+}
+
+.column {
+    flex: 50%
+}
