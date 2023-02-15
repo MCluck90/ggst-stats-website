@@ -1,15 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
-    <link rel="stylesheet" href="/static/base.css">
-    <link rel="stylesheet" href="/static/index.css">
-    <title>GGST Stats</title>
-</head>
-<body class="dark-mode">
+{% extends "base.html" %}
+{% block title %}GGST Stats{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="/static/index.css">
+{% endblock %}
+{% block content %}
     <div id="main-content">
         <h1>Resource hub for Guilty Gear Statistics</h1>
         <p>Since 2. February I've been collecting every single match that has happened in the Strive Tower. Below are the current statistics I can display.</p><br>
@@ -34,5 +28,4 @@
 
 
     </div>
-</body>
-</html>
+    {% endblock %}
