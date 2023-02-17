@@ -4,28 +4,26 @@
 <link rel="stylesheet" href="/static/index.css">
 {% endblock %}
 {% block content %}
-    <div id="main-content">
-        <h1>Resource hub for Guilty Gear Statistics</h1>
-        <p>Since 2. February I've been collecting every single match that has happened in the Strive Tower. Below are the current statistics I can display.</p><br>
-        <ul>
-            <li>Total matches: {{count}}</li>
-            <li>Celestial matches: {{celestial}}</li>
-            <li>Between Floor 8 and 10: {{eight_to_ten}}</li>
-            <li>Floor 7 and below: {{seven_and_below}}</li>
-        </ul>
-    <div id="characters">
-        <div class="column">
-            {% for upper in upper_column %}
-                <a href="chara/{{upper}}"><img src="img/{{ upper }}_icon.png" class="char-item"></a>
-            {% endfor %}
-        </div>
-        <div class="column">
-            {% for lower in lower_column %}
-                <a href="chara/{{lower}}"><img src="img/{{ lower }}_icon.png" class="char-item"></a>
-            {% endfor %}
-        </div>
+<h1>Resource hub for Guilty Gear Statistics</h1>
+<p>Since 2. February I've been collecting every single match that has happened in the Strive Tower. Below are the
+    current statistics I can display.</p><br>
+<ul>
+    <li>Total matches: {{count}}</li>
+    <li>Celestial matches: {{celestial}}</li>
+    <li>Between Floor 8 and 10: {{eight_to_ten}}</li>
+    <li>Floor 7 and below: {{seven_and_below}}</li>
+</ul>
+<div id="characters">
+    <div class="column">
+        {% for upper in upper_column %}
+        <a href="chara/{{upper}}"><img src="img/{{ upper }}_icon.png" class="char-item"></a>
+        {% endfor %}
+    </div>
+    <div class="column">
+        {% for lower in lower_column %}
+        <a href="chara/{{lower}}"><img src="img/{{ lower }}_icon.png" class="char-item"></a>
+        {% endfor %}
     </div>
 
-
-    </div>
-    {% endblock %}
+</div>
+{% endblock %}
