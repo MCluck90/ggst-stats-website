@@ -1,11 +1,14 @@
 #characters {
     display: flex;
-    flex-direction: column;
-    column-count: 2;
+    flex-wrap: wrap;
+}
+
+#characters > a {
+    flex: 1 0 9%;
 }
 
 .char-item {
-    flex-grow: 1;
+    flex: 1;
 }
 
 .column {

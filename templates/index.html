@@ -14,16 +14,11 @@
     <li>Floor 7 and below: {{seven_and_below}}</li>
 </ul>
 <div id="characters">
-    <div class="column">
-        {% for upper in upper_column %}
-        <a href="chara/{{upper}}"><img src="img/{{ upper }}_icon.png" class="char-item"></a>
-        {% endfor %}
-    </div>
-    <div class="column">
-        {% for lower in lower_column %}
-        <a href="chara/{{lower}}"><img src="img/{{ lower }}_icon.png" class="char-item"></a>
-        {% endfor %}
-    </div>
-
+    {% for upper in upper_column %}
+    <a href="chara/{{upper}}"><img src="img/{{ upper }}_icon.png" class="char-item"></a>
+    {% endfor %}
+    {% for lower in lower_column %}
+    <a href="chara/{{lower}}"><img src="img/{{ lower }}_icon.png" class="char-item"></a>
+    {% endfor %}
 </div>
 {% endblock %}
